@@ -1,45 +1,45 @@
 import streamlit as st
 from streamlit_chat import message
 from llama_index.llms.groq import Groq
-from llama_index.core.memory import ChatSummaryMemoryBuffer
-from llama_index.vector_stores.chroma import ChromaVectorStore
-from llama_index.core import VectorStoreIndex
+from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
-from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+from llama_index.core.memory import ChatSummaryMemoryBuffer
+from llama_index.core.vector_stores import SimpleVectorStore  # Importação corrigida
 from llama_index.core import Settings
-import chromadb
 from dotenv import load_dotenv
 import os
 import time
 
 load_dotenv()
-groq_api = os.getenv("API_KEY")
-
 
 @st.cache_resource
 def init_chat_engine():
+    # Configuração do embedding
     embed_model = HuggingFaceEmbedding(model_name="intfloat/multilingual-e5-large")
-    Settings.embed_model = embed_model
-
     llm = Groq(model="llama3-70b-8192", api_key=os.getenv("API_KEY"))
+
+    Settings.embed_model = embed_model
+    Settings.llm = llm
+
+    # Memória de conversa
     memory = ChatSummaryMemoryBuffer(llm=llm, token_limit=512)
 
-    client = chromadb.PersistentClient(path="./chroma_db")
-    embedding_function = SentenceTransformerEmbeddingFunction(
-        model_name="intfloat/multilingual-e5-large"
-    )
+    # Carregar documentos
+    documents = SimpleDirectoryReader("./documentos").load_data()
     
-    collection = client.get_or_create_collection(
-        name="documentos_z17",
-        embedding_function=embedding_function
+    # Configurar vector store (versão atualizada)
+    vector_store = SimpleVectorStore()
+    storage_context = StorageContext.from_defaults(vector_store=vector_store)
+    
+    # Criar índice
+    index = VectorStoreIndex.from_documents(
+        documents,
+        storage_context=storage_context,
+        show_progress=True
     )
-
-    vector_store = ChromaVectorStore(chroma_collection=collection)
-    index = VectorStoreIndex.from_vector_store(vector_store)
 
     return index.as_chat_engine(
         chat_mode="context",
-        llm=llm,
         memory=memory,
         system_prompt=(
             "Você é um assistente especializado em IBM z17. "
@@ -48,6 +48,7 @@ def init_chat_engine():
         )
     )
 
+# Inicializar o motor de chat
 chat_engine = init_chat_engine()
 
 st.set_page_config(
