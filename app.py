@@ -213,6 +213,8 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
 
+    st.link_button("Acesse o meu portfólio", "https://matheushenryque.github.io/Portfolio/")
+
 if menu == "🏠 Página Inicial":
     col1, col2 = st.columns([1, 1], gap="large")
 
