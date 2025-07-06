@@ -199,7 +199,7 @@ with st.sidebar:
     )
 
     if st.button("Chatbot"):
-        st.switch_page("pages\chatbot.py")
+        st.switch_page(r"pages/page_1.py")
     
     st.markdown("---")
     
