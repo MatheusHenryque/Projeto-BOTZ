@@ -244,6 +244,9 @@ if menu == "🏠 Página Inicial":
             st.session_state.menu = "💬 Chatbot"  # Atribuição correta usando session_state
             st.rerun()
 
+        if st.session_state.menu == "💬 Chatbot":
+            st.header('🤖 Bem-vindo ao BOTZ', divider=True)
+
     with col2:
         st.markdown(f"""
         <div style="background: linear-gradient(135deg, {COLOR_PALETTE['dark']}, {COLOR_PALETTE['primary']});
