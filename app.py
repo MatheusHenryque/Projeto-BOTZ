@@ -197,9 +197,6 @@ with st.sidebar:
         label_visibility="collapsed",
         key="nav_radio"
     )
-
-    if st.button("Chatbot"):
-        st.switch_page(r"pages/page_1.py")
     
     st.markdown("---")
     
@@ -244,7 +241,7 @@ if menu == "🏠 Página Inicial":
         """, unsafe_allow_html=True)
 
         if st.button("Iniciar Conversa →", key="start_button", use_container_width=True):
-            menu == "💬 Chatbot"
+            st.session_state.menu = "💬 Chatbot"  # Atribuição correta usando session_state
             st.rerun()
 
     with col2:
