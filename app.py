@@ -197,9 +197,9 @@ with st.sidebar:
         label_visibility="collapsed",
         key="nav_radio"
     )
-    
+
     if st.button("Chatbot"):
-        st.switch_page("pages/chatbot.py")
+        st.switch_page("pages\chatbot.py")
     
     st.markdown("---")
     
