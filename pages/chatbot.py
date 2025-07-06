@@ -218,73 +218,8 @@ with st.sidebar:
 
     st.link_button("Acesse o meu portfólio", "https://matheushenryque.github.io/Portfolio/")
 
-if menu == "🏠 Página Inicial":
-    col1, col2 = st.columns([1, 1], gap="large")
 
-    with col1:
-        st.markdown(f"""
-        <h1 style="color: {COLOR_PALETTE['secondary']}; margin-bottom: 1rem;">
-            BOTZ <span style="color: {COLOR_PALETTE['text']};">- Assistente Z17</span>
-        </h1>
-        <div style="font-size: 1.1rem; line-height: 1.6; color: {COLOR_PALETTE['text']};">
-            Seu especialista em <span style="color: {COLOR_PALETTE['secondary']};">IBM Z17</span>, 
-            com conhecimento técnico avançado sobre arquitetura, operação e otimização de mainframes.
-        </div>
-        """, unsafe_allow_html=True)
-
-        st.markdown("---")
-        
-        st.markdown(f"""
-        <h3 style="color: {COLOR_PALETTE['secondary']};">🚀 Como usar</h3>
-        <ol style="color: {COLOR_PALETTE['text']}; line-height: 2;">
-            <li>Acesse a aba <strong>Chatbot</strong> no menu lateral</li>
-            <li>Digite suas perguntas técnicas</li>
-            <li>Obtenha respostas precisas baseadas na documentação</li>
-        </ol>
-        """, unsafe_allow_html=True)
-
-        if st.button("Iniciar Conversa →", key="start_button", use_container_width=True):
-            menu == "💬 Chatbot"
-            st.rerun()
-
-    with col2:
-        st.markdown(f"""
-        <div style="background: linear-gradient(135deg, {COLOR_PALETTE['dark']}, {COLOR_PALETTE['primary']});
-            height: 100%; min-height: 300px; border-radius: 12px; 
-            display: flex; justify-content: center; align-items: center;
-            border: 1px solid {COLOR_PALETTE['secondary']}; 
-            box-shadow: 0 8px 32px rgba(100, 255, 218, 0.1);">
-            <h3 style="color: {COLOR_PALETTE['secondary']};">IBM Z17 MAINFRAME</h3>
-        </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("---")
-    
-    st.markdown(f"""
-    <h2 style="text-align: center; margin-bottom: 1.5rem; color: {COLOR_PALETTE['secondary']};">
-        ✨ Recursos Técnicos
-    </h2>
-    """, unsafe_allow_html=True)
-
-    cols = st.columns(3)
-    features = [
-        ("📚", "Base de Conhecimento", "Documentação completa do Z17 indexada"),
-        ("🤖", "IA Especializada", "Respostas técnicas precisas e contextualizadas"),
-        ("⚡", "Performance", "Respostas rápidas com tecnologia Groq")
-    ]
-    
-    for col, (icon, title, desc) in zip(cols, features):
-        with col:
-            st.markdown(f"""
-            <div class="feature-card">
-                <div style="font-size: 2rem; color: {COLOR_PALETTE['secondary']}; 
-                    margin-bottom: 0.5rem;">{icon}</div>
-                <h3 style="color: {COLOR_PALETTE['secondary']};">{title}</h3>
-                <p style="color: {COLOR_PALETTE['text']};">{desc}</p>
-            </div>
-            """, unsafe_allow_html=True)
-
-elif menu == "💬 Chatbot":
+if menu == "💬 Chatbot":
     st.header('🤖 Bem-vindo ao BOTZ', divider=True)
 
     chat_engine = st.session_state.get('chat_engine')
