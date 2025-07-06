@@ -241,68 +241,7 @@ if menu == "🏠 Página Inicial":
         """, unsafe_allow_html=True)
 
         if st.button("Iniciar Conversa →", key="start_button", use_container_width=True):
-            st.header('🤖 Bem-vindo ao BOTZ', divider=True)
-
-    chat_engine = st.session_state.get('chat_engine')
-    if chat_engine is None:
-        st.session_state.chat_engine = init_chat_engine()
-        chat_engine = st.session_state.chat_engine
-    
-    if 'chat_history' not in st.session_state:
-        st.session_state.chat_history = []
-    
-    for mensagem in st.session_state.chat_history:
-        with st.chat_message(mensagem["type"]):
-            st.markdown(mensagem["content"])
-    
-    input_usuario = st.chat_input("Fale com o BOTZ sobre IBM Z17")
-    
-    if input_usuario:
-        with st.chat_message("human"):
-            st.markdown(input_usuario)
-        
-        st.session_state.chat_history.append({
-            "type": "human",
-            "content": input_usuario
-        })
-        
-        # Resposta do bot
-        with st.chat_message("ai"):
-            with st.spinner("Pensando..."):
-                try:
-                    start_time = time.time()
-                    resposta = chat_engine.chat(input_usuario).response
-                    processing_time = time.time() - start_time
-                    
-                    resposta_completa = f"{resposta}\n\n⏱️ {processing_time:.2f}s"
-                    st.markdown(resposta_completa)
-                    
-                    st.session_state.chat_history.append({
-                        "type": "ai",
-                        "content": resposta_completa
-                    })
-                except Exception as e:
-                    erro = f"⚠️ Ocorreu um erro: {str(e)}"
-                    st.error(erro)
-                    st.session_state.chat_history.append({
-                        "type": "ai",
-                        "content": erro
-                    })
-
-
-    if len(st.session_state['chat_history']) > 0:
-        st.markdown("---")
-        with st.expander("📚 Documentação Relacionada", expanded=False):
-            st.markdown(f"""
-            <div style="color: {COLOR_PALETTE['text']};">
-                <h4 style="color: {COLOR_PALETTE['secondary']};">Recursos IBM</h4>
-                <ul>
-                    <li><strong>IBM Z17 Technical Guide</strong></li>
-                    <li><strong>Redbook Z17</strong></li>
-                    <li><strong>GDPS Configuration</strong></li>
-                </ul>
-            </div>
-            """, unsafe_allow_html=True)
+            menu == "💬 Chatbot"
             st.rerun()
 
     with col2:
