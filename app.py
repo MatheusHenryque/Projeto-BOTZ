@@ -1,10 +1,9 @@
 import streamlit as st
-from streamlit_chat import message
 from llama_index.llms.groq import Groq
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.core.memory import ChatSummaryMemoryBuffer
-from llama_index.core.vector_stores import SimpleVectorStore  # Importação corrigida
+from llama_index.core.vector_stores import SimpleVectorStore
 from llama_index.core import Settings
 from dotenv import load_dotenv
 import os
@@ -18,7 +17,6 @@ def init_chat_engine():
     embed_model = HuggingFaceEmbedding(model_name="intfloat/multilingual-e5-large")
     llm = Groq(model="llama3-70b-8192", api_key=st.secrets["API_KEY"])
 
-
     Settings.embed_model = embed_model
     Settings.llm = llm
 
@@ -28,7 +26,7 @@ def init_chat_engine():
     # Carregar documentos
     documents = SimpleDirectoryReader("./documentos").load_data()
     
-    # Configurar vector store (versão atualizada)
+    # Configurar vector store
     vector_store = SimpleVectorStore()
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
     
@@ -176,8 +174,19 @@ st.markdown(f"""
             border-radius: 8px !important;
             min-height: 60px !important;
         }}
+        
+        /* Botões de navegação ativos */
+        .nav-button-active {{
+            background-color: var(--accent) !important;
+            color: white !important;
+            box-shadow: 0 0 10px rgba(30, 144, 255, 0.5) !important;
+        }}
     </style>
 """, unsafe_allow_html=True)
+
+# Inicializar estado da sessão
+if 'current_page' not in st.session_state:
+    st.session_state.current_page = "🏠 Página Inicial"
 
 with st.sidebar:
     st.markdown(f"""
@@ -191,12 +200,20 @@ with st.sidebar:
     
     st.markdown("---")
     
-    menu = st.radio(
-        "Navegação",
-        ["🏠 Página Inicial", "💬 Chatbot"],
-        label_visibility="collapsed",
-        key="nav_radio"
-    )
+    # Botões de navegação no sidebar
+    if st.button("🏠 Página Inicial", 
+                key="nav_home",
+                use_container_width=True,
+                type="primary" if st.session_state.current_page == "🏠 Página Inicial" else "secondary"):
+        st.session_state.current_page = "🏠 Página Inicial"
+        st.rerun()
+    
+    if st.button("💬 Chatbot", 
+                key="nav_chat",
+                use_container_width=True,
+                type="primary" if st.session_state.current_page == "💬 Chatbot" else "secondary"):
+        st.session_state.current_page = "💬 Chatbot"
+        st.rerun()
     
     st.markdown("---")
     
@@ -215,7 +232,8 @@ with st.sidebar:
 
     st.link_button("Acesse o meu portfólio", "https://matheushenryque.github.io/Portfolio/")
 
-if menu == "🏠 Página Inicial":
+# Conteúdo da Página Inicial
+if st.session_state.current_page == "🏠 Página Inicial":
     col1, col2 = st.columns([1, 1], gap="large")
 
     with col1:
@@ -240,12 +258,13 @@ if menu == "🏠 Página Inicial":
         </ol>
         """, unsafe_allow_html=True)
 
-        if st.button("Iniciar Conversa →", key="start_button", use_container_width=True):
-            st.session_state.menu = "💬 Chatbot"  # Atribuição correta usando session_state
+        # Botão "Iniciar Conversa" corrigido
+        if st.button("Iniciar Conversa →", 
+                    key="start_button", 
+                    use_container_width=True,
+                    type="primary"):
+            st.session_state.current_page = "💬 Chatbot"
             st.rerun()
-
-        if st.session_state.menu == "💬 Chatbot":
-            st.header('🤖 Bem-vindo ao BOTZ', divider=True)
 
     with col2:
         st.markdown(f"""
@@ -284,7 +303,8 @@ if menu == "🏠 Página Inicial":
             </div>
             """, unsafe_allow_html=True)
 
-elif menu == "💬 Chatbot":
+# Conteúdo do Chatbot
+elif st.session_state.current_page == "💬 Chatbot":
     st.header('🤖 Bem-vindo ao BOTZ', divider=True)
 
     chat_engine = st.session_state.get('chat_engine')
@@ -332,7 +352,6 @@ elif menu == "💬 Chatbot":
                         "type": "ai",
                         "content": erro
                     })
-
 
     if len(st.session_state['chat_history']) > 0:
         st.markdown("---")
