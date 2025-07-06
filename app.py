@@ -13,24 +13,14 @@ load_dotenv()
 
 @st.cache_resource
 def init_chat_engine():
-    # Configuração do embedding
     embed_model = HuggingFaceEmbedding(model_name="intfloat/multilingual-e5-large")
     llm = Groq(model="llama3-70b-8192", api_key=st.secrets["API_KEY"])
-
     Settings.embed_model = embed_model
     Settings.llm = llm
-
-    # Memória de conversa
     memory = ChatSummaryMemoryBuffer(llm=llm, token_limit=512)
-
-    # Carregar documentos
     documents = SimpleDirectoryReader("./documentos").load_data()
-    
-    # Configurar vector store
     vector_store = SimpleVectorStore()
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
-    
-    # Criar índice
     index = VectorStoreIndex.from_documents(
         documents,
         storage_context=storage_context,
@@ -47,7 +37,6 @@ def init_chat_engine():
         )
     )
 
-# Inicializar o motor de chat
 chat_engine = init_chat_engine()
 
 st.set_page_config(
@@ -184,7 +173,6 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-# Inicializar estado da sessão
 if 'current_page' not in st.session_state:
     st.session_state.current_page = "🏠 Página Inicial"
 
@@ -200,7 +188,6 @@ with st.sidebar:
     
     st.markdown("---")
     
-    # Botões de navegação no sidebar
     if st.button("🏠 Página Inicial", 
                 key="nav_home",
                 use_container_width=True,
@@ -216,7 +203,6 @@ with st.sidebar:
         st.rerun()
     
     st.markdown("---")
-    
     st.markdown(f"""
     <div style="color: {COLOR_PALETTE['text']}; padding: 1rem;">
         <h4 style="color: {COLOR_PALETTE['secondary']};">Sobre o BOTZ</h4>
@@ -232,7 +218,6 @@ with st.sidebar:
 
     st.link_button("Acesse o meu portfólio", "https://matheushenryque.github.io/Portfolio/")
 
-# Conteúdo da Página Inicial
 if st.session_state.current_page == "🏠 Página Inicial":
     col1, col2 = st.columns([1, 1], gap="large")
 
@@ -258,7 +243,6 @@ if st.session_state.current_page == "🏠 Página Inicial":
         </ol>
         """, unsafe_allow_html=True)
 
-        # Botão "Iniciar Conversa" corrigido
         if st.button("Iniciar Conversa →", 
                     key="start_button", 
                     use_container_width=True,
@@ -303,7 +287,6 @@ if st.session_state.current_page == "🏠 Página Inicial":
             </div>
             """, unsafe_allow_html=True)
 
-# Conteúdo do Chatbot
 elif st.session_state.current_page == "💬 Chatbot":
     st.header('🤖 Bem-vindo ao BOTZ', divider=True)
 
@@ -329,8 +312,6 @@ elif st.session_state.current_page == "💬 Chatbot":
             "type": "human",
             "content": input_usuario
         })
-        
-        # Resposta do bot
         with st.chat_message("ai"):
             with st.spinner("Pensando..."):
                 try:
