@@ -14,7 +14,7 @@ load_dotenv()
 @st.cache_resource
 def init_chat_engine():
     embed_model = HuggingFaceEmbedding(model_name="intfloat/multilingual-e5-large")
-    llm = Groq(model="llama3-70b-8192", api_key=st.secrets["API_KEY"])
+    llm = Groq(model="llama-3.3-70b-versatile", api_key=st.secrets["API_KEY"])
     Settings.embed_model = embed_model
     Settings.llm = llm
     memory = ChatSummaryMemoryBuffer(llm=llm, token_limit=512)
